@@ -89,7 +89,7 @@ def caminho_de_u_ate_v(G, u, v, caminho_proibido = []):
 	pred = {u:None}
 	caminho_encontrado = False
 	while fila:
-		w = fila.pop()
+		w = fila.popleft()
 		for x in G.vizinhos[w]:
 			if x not in caminho_proibido:
 				pred_x = pred.get(x, None)
