@@ -1,0 +1,141 @@
+Algoritmo: FORCA_BRUTA
+Análise de complexidade: ACHAR_CICLOS tem complexidade O(n^2 + nm + nk), onde n é a quantidade de vértices de G, m é a quantidade de arestas de G e k é a quantidade de ciclos de G. O algoritmo TEM_CORDA tem complexidade O(n + m), onde n e m são a quantidade de vértices e arestas do grafo induzido pelo ciclo c em G, e como esse algoritmo é executado para cada ciclo, temos que a  complexidade final de FORCA_BRUTA é O(n^2 + nm + nk) + O(nk' + mk') = O(n^2 + nk' + mk' + nm + nk), onde k' é a quantidade de ciclos simples únicos de G
+Descrição: Verifica se todos os ciclos de tamanho >= 4 possuem pelo menos uma corda
+Entrada: Grafo G
+Saída: TRUE se G é cordal, FALSE caso contrário
+------------------------------------------------------------------------------------------------
+ciclos <- ACHAR_CICLOS(G)
+para cada ciclo c pertencente a ciclos:
+	se TEM_CORDA(G, c) == FALSE:
+		retornar FALSE
+
+retornar TRUE
+================================================================================================
+
+
+
+Algoritmo: ACHAR_CICLOS
+Análise de complexidade: É bem sabido que uma busca em largura para grafos simples tem complexidade O(n + m), onde n é a quantidade de vértices e m é a quantidade de arestas. Dito isto, o algoritmo ACHAR_CICLOS realiza uma busca em largura para cada vértice v pertencente a V(G), logo a complexidade aumenta para O(n^2 + nm), porém, para cada ciclo simples encontrado o algoritmo CICLOS_IGUAIS é executado, que tem complexidade O(n), onde n nesse caso é o tamanho do ciclo. Como no pior caso um ciclo pode passar por todos os vértices do grafo, a complexidade do algoritmo passa a ser O(n^2 + mn + kn), onde k representa a quantidade de ciclos simples não únicos do grafo.
+Descrição: Verifica todos os caminhos que começam e terminam no mesmo vértice, para todos os vértices, retornando todos os caminhos (ciclos, nesse caso) diferentes encontrados com tamanho >= 4
+Entrada: Grafo G
+Saída: lista de todos os ciclos únicos de tamanho maior que 3
+------------------------------------------------------------------------------------------------
+ciclos <- lista vazia
+para todo vértice v em V(G):
+	caminhos <- pilha contendo o primeiro caminho começando em v
+
+	enquanto caminhos não estiver vazio:
+		caminho_ate_v <- pop(caminhos)
+		w <- último vértice de caminho_ate_v
+
+		para cada vértice u na vizinhança de w:
+			se u == v e tamanho(caminho_ate_v) > 3:
+				novo_ciclo <- caminho_ate_v
+				ciclo_duplicado <- FALSE
+
+				para cada ciclo c em ciclos:
+					se CICLOS_IGUAIS(novo_ciclo, c) == TRUE:
+						ciclo_duplicado <- TRUE
+
+				se ciclo_duplicado == FALSE:
+					adicionar novo_ciclo à lista de ciclos
+
+			senão se u não faz parte de caminho_ate_v:
+				adicionar caminho_ate_v + u à pilha de caminhos
+
+retorna ciclos
+================================================================================================
+
+
+
+Algoritmo: CICLOS_IGUAIS
+Análise de complexidade: Todas as operações executadas ocorrem uma quantidade constante de vezes para cada elemento de cada ciclo, logo a complexidade é O(n)
+Descrição: Verifica se dois ciclos são iguais através de algumas permutações como rotação e inversão
+Entrada: ciclo c1, ciclo c2
+Saída: TRUE se c1 e c2 são iguais, FALSE caso contrário
+------------------------------------------------------------------------------------------------
+se c1 e c2 tem o mesmo tamanho:
+	v <- primeiro vértice de c1
+
+	se v não existe em c2:
+		retornar FALSE
+
+	c2 <- ROTACIONAR_CICLO(c2, v)
+
+	iguais <- TRUE
+	para cada vértice u,w em c1,c2 respectivamente:
+		se u != w:
+			iguais <- FALSE
+
+	se iguais == TRUE:
+		retornar TRUE
+
+	c2 <- INVERTER_CICLO(c2) 
+	c2 <- ROTACIONAR_CICLO(c2, v)
+
+	iguais <- TRUE
+	para cada vértice u,w em c1,c2 respectivamente:
+		se u != w:
+			iguais <- FALSE
+
+	se iguais == TRUE:
+		retornar TRUE
+
+retornar FALSE
+================================================================================================
+
+
+
+Algoritmo: ROTACIONAR_CICLO
+Análise de complexidade: É apenas uma reordenação dos elementos de uma lista, complexidade é O(n)
+Descrição: Rotaciona a ordenação de um ciclo até que um designado vértice v seja o primeiro vértice do ciclo
+Entrada: ciclo c, vértice v
+Saída: ciclo c rotacionado com v sendo o primeiro vértice
+------------------------------------------------------------------------------------------------
+antes_de_v <- lista vazia
+após_v <- lista vazia
+v_encontrado <- FALSE
+
+para cada vértice u em c:
+	se u == v:
+		v_encontrado <- TRUE
+
+	se v_encontrado == FALSE:
+		adicionar u à lista antes_de_v
+	senão:
+		adicionar u à lista após_v
+
+retornar concatenação de após_v com antes_de_v
+================================================================================================
+
+
+
+Algoritmo: INVERTER_CICLO
+Análise de complexidade: É apenas uma reordenação dos elementos de uma lista, complexidade é O(n)
+Descrição: Inverte a ordenação dos vértices de um ciclo (o primeiro troca com o último, o segundo com o penúltimo e assim por diante)
+Entrada: ciclo c
+Saída: ciclo c invertido
+------------------------------------------------------------------------------------------------
+c_invertido <- lista vazia
+
+para cada vértice v em c:
+	adicionar v ao início de c_invertido
+
+retornar c_invertido
+================================================================================================
+
+
+
+Algoritmo: TEM_CORDA
+Análise de complexidade: O loop externo é executado para cada vértice pertencente ao ciclo c e o loop interno é executado para cada vizinho de cada vértice em c (verificação de arestas), logo esses dois loops correspondem a O(n + m), onde n é a quantidade de vértices em c e m é a quantidade de arestas pertencentes ao grafo G' induzido por c em G. A verificação de adjacência no ciclo pode ser feita em tempo constante.
+Descrição: Verifica se um dos ciclos de G tem ao menos uma corda
+Entrada: Grafo G, ciclo c
+Saída: TRUE se o ciclo tem ao menos uma corda, FALSE caso contrário
+------------------------------------------------------------------------------------------------
+para cada vértice v em c:
+	para cada vértice u pertencente a V(G) vizinho de v:
+		se u faz parte de c, mas não é adjacente a v no ciclo:
+			retornar TRUE
+
+retornar FALSE
+================================================================================================
