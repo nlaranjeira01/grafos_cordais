@@ -50,7 +50,7 @@ class Grafo:
 							self.add_vertice(v)  #nesse caso não há nada após o ':', portanto v é um vértice isolado
 
 	def __str__(self):
-		string = "n = " + str(self.n) + ", m = " + str(self.m) + "\n"
+		string = "|V(G)| = " + str(self.n) + ", |E(G)| = " + str(self.m) + "\n"
 
 		for v in self.vertices:
 			string += "N(" + v + ") = {"

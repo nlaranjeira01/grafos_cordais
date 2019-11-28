@@ -1,5 +1,6 @@
 from grafo import Grafo
 
+
 class No:
 	def __init__(self, item = None):
 		self.item = item
@@ -143,3 +144,27 @@ def grafoNaoCordal(size):
 			g.add_aresta(str(i), str(j))
 
 	return g
+
+try:
+	from guppy import hpy
+	hp = hpy()
+except:
+	hp = None
+
+
+def var_estatica(var_nome, valor):
+	def decorar(func):
+		setattr(func, var_nome, valor)
+		global hp
+		hp.setrelheap()
+		return func
+	return decorar
+
+@var_estatica("max", 0)
+def conta_memoria():
+	global hp
+	if hp:
+		sz = hp.heap().size
+		if sz > conta_memoria.max:
+			conta_memoria.max = sz
+	return conta_memoria.max

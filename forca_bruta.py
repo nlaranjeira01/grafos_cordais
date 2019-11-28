@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import deque
 from grafo import Grafo
+from utils import conta_memoria
 
 """
 Retorna todos os ciclos cujos tamanhos são maiores que 3
@@ -29,6 +30,7 @@ def achar_ciclos4_forca_bruta(G):
 					caminho_ate_u = caminho_ate_v[:] #cópia do caminho
 					caminho_ate_u.append(u) #vizinho u é adicionado ao novo caminho
 					pilha.append(caminho_ate_u) #novo caminho é adicionado na pilha
+			conta_memoria()
 	return ciclos
 
 """
@@ -70,8 +72,10 @@ def tem_corda(G, ciclo):
 		for u in G.vizinhos[v]:
 			adjacentes_v = [ciclo[indice_v - 1], ciclo[(indice_v + 1) % tamanho_ciclo]]
 			if u not in adjacentes_v and u in ciclo:
+				conta_memoria()
 				return True
 
+	conta_memoria()
 	return False
 
 """
@@ -88,6 +92,7 @@ def eh_cordal_forca_bruta(G):
 			 proibidos.append(ciclo)
 			 qtd_sem_corda += 1
 
+	conta_memoria()
 	if qtd_sem_corda == 0:
 		return  (True, qtd_sem_corda, [])
 

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from grafo import Grafo
-from utils import No, ListaDuplamenteEncadeada, Conjunto
+from utils import No, ListaDuplamenteEncadeada, Conjunto, conta_memoria
 from collections import deque
 from forca_bruta import tem_corda
-import os, psutil
 
 #Um grafo é cordal se e somente se ele possui uma ordem de eliminação perfeita
 #Uma busca em largura lexicográfica (Lexicographic Breadth-first Search -- LEXBFS) retorna a ordem de eliminação perfeita de um grafo
@@ -13,8 +12,10 @@ def eh_cordal_LEXBFS(G):
 	eh_cordal, corda_faltando = testar_ordem_eliminacao_perfeita(G, OEP, OEP_predecessores)
 
 	if not eh_cordal:
+		conta_memoria()
 		return (False, encontrar_ciclo(G, corda_faltando[0], corda_faltando[1]))
 
+	conta_memoria()
 	return (True, OEP[::-1])
 
 def testar_ordem_eliminacao_perfeita(G, ordenacao, predecessores):
@@ -26,6 +27,7 @@ def testar_ordem_eliminacao_perfeita(G, ordenacao, predecessores):
 				if u != w: #O(1)
 					test.append((u, w)) #O(1)
 	
+	conta_memoria()
 	for u, v in test:
 		if u in G.vizinhos[v]:
 			continue
@@ -80,6 +82,8 @@ def busca_largura_lexicografica(G):
 			localizacao[w] = ant_conj_w
 			ant_conj_w.item.vertices.inserir_fim(no_w)
 			ant_conj_w.item.pos[w] = no_w
+			conta_memoria()
+
 
 	return (ordem_eliminacao_perfeita, predecessores)
 
@@ -97,6 +101,7 @@ def caminho_de_u_ate_v(G, u, v, caminho_proibido = []):
 					pred[x] = w
 					fila.append(x)
 					if x == v:
+						conta_memoria()
 						fila.clear()
 						caminho_encontrado = True
 						break
@@ -110,7 +115,7 @@ def caminho_de_u_ate_v(G, u, v, caminho_proibido = []):
 	while pred[x] != u:
 		caminho_uv.append(pred[x])
 		x = pred[x]
-
+	conta_memoria()
 	return caminho_uv
 
 def encontrar_ciclo(G, u, v):
@@ -119,6 +124,7 @@ def encontrar_ciclo(G, u, v):
 		caminho = caminho_de_u_ate_v(G, u, v, caminho_proibido = [v for caminho in caminhos for v in caminho])
 		
 		if caminho == []:
+			conta_memoria()
 			break
 		
 		caminhos.append(caminho)
@@ -128,6 +134,8 @@ def encontrar_ciclo(G, u, v):
 		for j in range(i + 1, len(caminhos)):
 			ciclo = [u] + caminhos[i][::-1] + [v] + caminhos[j]
 			if not tem_corda(G, ciclo):
+				conta_memoria()
 				return ciclo
-
+				
+	conta_memoria()
 	return []
