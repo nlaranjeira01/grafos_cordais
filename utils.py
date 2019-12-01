@@ -156,7 +156,8 @@ def var_estatica(var_nome, valor):
 	def decorar(func):
 		setattr(func, var_nome, valor)
 		global hp
-		hp.setrelheap()
+		if hp:
+			hp.setrelheap()
 		return func
 	return decorar
 

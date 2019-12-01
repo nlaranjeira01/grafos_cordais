@@ -4,6 +4,7 @@ from grafo import Grafo
 from utils import conta_memoria
 
 """
+Para cada vértice do grafo, percorre todos os caminhos possíveis... Os caminhos que retornam ao vértice inicial e tem tamanho maior que 3 são guardados numa lista e retornados pela função
 Retorna todos os ciclos cujos tamanhos são maiores que 3
 """
 def achar_ciclos4_forca_bruta(G):
@@ -62,7 +63,7 @@ def ciclos_sao_iguais(c1, c2):
 
 	return False
 """
-verifica se um ciclo tem corda
+verifica se um ciclo tem pelo menos uma corda
 uma corda é qualquer aresta que liga dois vértices de um ciclo, mas não pertence ao ciclo
 """
 def tem_corda(G, ciclo):

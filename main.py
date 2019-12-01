@@ -5,10 +5,15 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-a", "--arquivo", help = "Nome do arquivo que descreve o grafo", default = "entrada.txt")
 parser.add_argument("-m", "--metodo", help = "Método para verificar se um grafo é cordal (opções: [fb, forca_bruta]  OU [ef, eficiente])", required = True, choices=["fb", "forca_bruta", "ef", "eficiente"])
+parser.add_argument("-c", "--contar_memoria", help = "Deixa de contar a memória utilizada pelos algoritmos", action='store_true')
 args = parser.parse_args()
 
 if not utils.hp:
 	print("Módulo guppy não encontrado. Não será possível contar a memória utilizada pelos algoritmos!\nPara instalar o módulo guppy, use esse comando no cmd/terminal: pip install -U guppy3")
+elif args.contar_memoria:
+	print("<<CUIDADO: O contador de memória deixa a execução dos algoritmos significantemente mais devagar>>")
+else:
+	utils.hp = None
 
 arquivo = args.arquivo
 g = Grafo(arquivo)
@@ -28,7 +33,9 @@ if args.metodo in {"fb", "forca_bruta"}:
 			print(", ".join(proibido))
 	else:
 		print("O grafo é cordal!")
-	print("Memória utilizada: " + str(mem_utilizada / 1000.0) + " KB")
+	
+	if args.contar_memoria:
+		print("Memória utilizada: " + str(mem_utilizada / 1000.0) + " KB")
 
 elif args.metodo in {"ef", "eficiente"}:
 	print("Executando o algoritmo eficiente (ordem de eliminação perfeita)")
@@ -42,4 +49,6 @@ elif args.metodo in {"ef", "eficiente"}:
 	else:
 		print("O grafo é cordal!")
 		print("Ordem de eliminação perfeita: " + ", ".join(saida_ef[1]))
-	print("Memória utilizada: " + str(mem_utilizada / 1000.0) + " KB")
+
+	if args.contar_memoria:
+		print("Memória utilizada: " + str(mem_utilizada / 1000.0) + " KB")
